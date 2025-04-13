@@ -77,20 +77,21 @@ end
 
 -- Figures out how to display the craftable counts for a recipe.
 -- Returns: num, num_with_bank, num_with_alts
-local function get_craftable_counts(recipe)
+local function get_craftable_counts(recipeIndex)
     local factor = 1
     if Skillet.db.profile.show_craft_counts then
         factor = recipe.nummade or 1
     end
 
-    local num      = math.floor(recipe.numcraftable / factor)
-    local numwbank = math.floor(recipe.numcraftablewbank / factor)
-    local numwalts = nil
-    if recipe.numcraftablewalts then
-        numwalts = math.floor(recipe.numcraftablewalts / factor)
+    local reagentsCount = GetTradeSkillNumReagents(recipeIndex)
+    
+    local craftable = 1000000
+    for reagentIndex = 1, reagentsCount do
+        local _, _, required, available = GetTradeSkillReagentInfo(recipeIndex, reagentIndex)
+        craftable = math.min(craftable, math.floor(available / required))
     end
 
-    return num, numwbank, numwalts
+    return craftable
 end
 
 function Skillet:CreateTradeSkillWindow()
@@ -345,7 +346,7 @@ local function is_hidden_skill(parent, skill_index)
     end
 
     -- are we hiding anything that can't be created with the mats on this character?
-    if s.numcraftablewbank == 0 and parent:GetTradeSkillOption(parent.currentTrade, "hideuncraftable") then
+    if get_craftable_counts(skill_index) == 0 and parent:GetTradeSkillOption(parent.currentTrade, "hideuncraftable") then
         return true
     end
 
@@ -664,20 +665,9 @@ function Skillet:internal_UpdateTradeSkillWindow()
                     end
 
                     text = text .. s.name
-                    local num, numwbank, numwalts = get_craftable_counts(s)
-                    if num > 0 or numwbank > 0 or (numwalts and numwalts > 0) then
-                        local count = "[" .. num
-                        -- only show bank and alt counts if it has been enabled
-                        -- through the options.
-                        if self.db.profile.show_bank_alt_counts then
-                            count = count .. "/" .. numwbank
-                            if numwalts then
-                                -- only show this if there is a mod installed that
-                                -- allows Stitch to collect the information.
-                                count = count .. "/" .. numwalts
-                            end
-                        end
-                        count = count .. "]"
+                    local num = get_craftable_counts(skillIndex)
+                    if num > 0 then
+                        local count = "[" .. num .. "]"
                         countText:SetText(count)
                         countText:Show()
                     end
@@ -812,27 +802,11 @@ function Skillet:DisplayTradeskillTooltip(id)
         return
     end
 
-    local num, numwbank, numwalts = get_craftable_counts(s)
+    local num = get_craftable_counts(id)
 
     -- how many can be created with the reagents in the inventory
     if num > 0 then
-        local text = "\n" .. num .. " " .. L["can be created from reagents in your inventory"];
-        GameTooltip:AddLine(text, 1, 1, 1, 0); -- (text, r, g, b, wrap)
-    end
-    -- how many can be created with the reagent in your inv + bank
-    if self.db.profile.show_bank_alt_counts and numwbank > 0 and numwbank ~= num then
-        local text = numwbank .. " " .. L["can be created from reagents in your inventory and bank"];
-        if num == 0 then
-            text = "\n" .. text;
-        end
-        GameTooltip:AddLine(text, 1, 1, 1, 0); -- (text, r, g, b, wrap)
-    end
-    -- how many can be crafted with reagents on *all* alts, including this one.
-    if self.db.profile.show_bank_alt_counts and numwalts and numwalts > 0 and numwalts ~= num then
-        local text = numwalts .. " " .. L["can be created from reagents on all characters"];
-        if num and numwbank == 0 then
-            text = "\n" .. text;
-        end
+        local text = "\n" .. num .. " " .. L["can be created"];
         GameTooltip:AddLine(text, 1, 1, 1, 0); -- (text, r, g, b, wrap)
     end
 
@@ -846,12 +820,8 @@ function Skillet:DisplayTradeskillTooltip(id)
         end
 
         local text = "  " .. reagent.needed .. " x " .. reagent.name;
-        local reagent_counts = GRAY_FONT_COLOR_CODE .. " (" .. reagent.num .. " / " .. (reagent.numwbank - reagent.num)
-        if reagent.numwalts then
-            -- numwalts includes this character, we want only alts
-            reagent_counts = reagent_counts .. " / " .. math.max(0, reagent.numwalts - reagent.numwbank)
-        end
-        reagent_counts = reagent_counts .. ")" .. FONT_COLOR_CODE_CLOSE
+        local _, _, _, availableReagents = GetTradeSkillReagentInfo(id, i)
+        local reagent_counts = GRAY_FONT_COLOR_CODE .. " (" .. availableReagents .. ")" .. FONT_COLOR_CODE_CLOSE
         if reagent.vendor == true then
             text = text .. GRAY_FONT_COLOR_CODE .. "  (" .. L["buyable"] .. ")" .. FONT_COLOR_CODE_CLOSE;
         end
@@ -860,11 +830,7 @@ function Skillet:DisplayTradeskillTooltip(id)
     end
 
     -- The legend at the bottom
-    text =  "(" .. L["reagents in inventory"] .. " / " .. L["bank"]
-    if s.numcraftablewalts ~= nil then
-        text = text .. " / " .. L["alts"]
-    end
-    text = text .. ")"
+    text =  "(" .. L["reagents available"] .. ")"
     GameTooltip:AddDoubleLine("\n", text)
 
     -- Do any mods want to add extra info about this recipe?
@@ -973,7 +939,7 @@ function Skillet:UpdateDetailsWindow(skill_index)
     end
 
     -- How many can we queue/create?
-    SkilletCreateCountSlider:SetMinMaxValues(1, max(20, s.numcraftablewbank));
+    SkilletCreateCountSlider:SetMinMaxValues(1, max(20, get_craftable_counts(skill_index)));
     SkilletCreateCountSlider:SetValue(self.numItemsToCraft);
     SkilletItemCountInputBox:SetText("" .. self.numItemsToCraft);
     SkilletCreateCountSlider.tooltipText = L["Number of items to queue/create"];
@@ -993,7 +959,7 @@ function Skillet:UpdateDetailsWindow(skill_index)
         local reagent = s[i];
 
         if reagent then
-            local num = reagent.num
+            local _, _, _, num = GetTradeSkillReagentInfo(skill_index, i)
 
             local count_text = string.format("%d/%d", num, reagent.needed)
             if ( num < reagent.needed ) then

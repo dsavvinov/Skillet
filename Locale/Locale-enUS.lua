@@ -33,12 +33,10 @@ L:RegisterTranslations("enUS", function() return {
     ["Rescan"]                      = true,
     ["Number of items to queue/create"]	= true,
     ["buyable"]						= true,
-    ["reagents in inventory"]		= true,
+    ["reagents available"]		    = true,
     ["bank"]						= true, -- "reagents in bank"
     ["alts"]						= true, -- "reagents on alts"
-    ["can be created from reagents in your inventory"] = true,
-    ["can be created from reagents in your inventory and bank"] = true,
-    ["can be created from reagents on all characters"] = true,
+    ["can be created"] = true,
     ["Scanning tradeskill"]			= true,
     ["Scan completed"]              = true,
     ["Filter"]						= true,

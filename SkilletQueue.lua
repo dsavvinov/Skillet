@@ -111,6 +111,7 @@ function Skillet:QueueAllItems()
 		local s = self.stitch:GetItemDataByIndex(self.currentTrade, self.selectedSkill)
         if s then
             local factor = s.nummade or 1
+            -- TODO: not correct here
             local count = math.floor(s.numcraftable/factor) - self.stitch:GetNumQueuedItems(self.selectedSkill)
             if count > 0 then
                 add_items_to_queue(self.selectedSkill, s, count)
@@ -142,6 +143,7 @@ function Skillet:CreateAllItems()
 		local s = self.stitch:GetItemDataByIndex(self.currentTrade, self.selectedSkill);
         if s then
             local factor = s.nummade or 1
+            -- TODO: not correct here
             local count = math.floor(s.numcraftable/factor) - self.stitch:GetNumQueuedItems(self.selectedSkill)
             if count > 0 then
                 add_items_to_queue(self.selectedSkill, s, count)
