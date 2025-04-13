@@ -29,7 +29,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ]]
 local MAJOR_VERSION = "SkilletStitch-1.1"
-local MINOR_VERSION = "$Rev$"
+local MINOR_VERSION = "$Revision: 165 $"
 
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary") end
 if not AceLibrary:IsNewVersion(MAJOR_VERSION, MINOR_VERSION) then return end

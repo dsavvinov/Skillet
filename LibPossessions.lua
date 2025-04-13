@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ]]--
 
 local MAJOR_VERSION = "LibPossessions"
-local MINOR_VERSION = tonumber(("$Revision$"):match("(%d+)"))
+local MINOR_VERSION = tonumber(("$Revision: 165 $"):match("(%d+)"))
 local COMMON_API    = "Common API" -- do not localize
 
 -- Ace addons will store realm data under "realm - faction"
