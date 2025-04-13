@@ -356,9 +356,11 @@ local function is_hidden_skill(parent, skill_index)
 
     local attunementFilter = parent:GetTradeSkillOption(parent.currentTrade, "attunementfilter")
     local link = s.link
-    if attunementFilter ~= "NONE" then
+    if attunementFilter ~= "NONE" and link then
         -- at least "UNATTUNABLE" level is requested - so if the item is unattunable at all, filter it out
-        if not SynastriaCoreLib.IsItemValid(link) then return true end
+        -- NB: if GetIDFromLink is nil, it means it's not an item, but e.g. enchantment (e.g. Nitro Boosts)
+        -- SynastriaCoreLib might fail on such links, but they're unattunable anyways
+        if not Skillet.stitch:GetIDFromLink(s.link) or not SynastriaCoreLib.IsItemValid(link) then return true end
         
         local forge = SynastriaCoreLib.GetItemAttuneForge(s.link)
 
@@ -690,7 +692,7 @@ function Skillet:internal_UpdateTradeSkillWindow()
 
                     text = text .. (self:GetRecipeNameSuffix(self.currentTrade, skillIndex) or "")
 
-                    if SynastriaCoreLib.IsAttunableBySomeone(s.link) then
+                    if s.link and self.stitch:GetIDFromLink(s.link) and SynastriaCoreLib.IsAttunableBySomeone(s.link) then
                         local forge = SynastriaCoreLib.GetItemAttuneForge(s.link)
 
                         if forge == 0 then
