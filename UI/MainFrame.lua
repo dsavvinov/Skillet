@@ -112,31 +112,17 @@ function Skillet:CreateTradeSkillWindow()
     frame:SetBackdrop(FrameBackdrop);
     frame:SetBackdropColor(0.1, 0.1, 0.1)
 
-    -- A title bar stolen from the Ace2 Waterfall window.
-    local r,g,b = 0, 0.7, 0; -- dark green
-    local titlebar = frame:CreateTexture(nil,"BACKGROUND")
-    local titlebar2 = frame:CreateTexture(nil,"BACKGROUND")
-
-    titlebar:SetPoint("TOPLEFT",frame,"TOPLEFT",3,-4)
-    titlebar:SetPoint("TOPRIGHT",frame,"TOPRIGHT",-3,-4)
-    titlebar:SetHeight(13)
-
-    titlebar2:SetPoint("TOPLEFT",titlebar,"BOTTOMLEFT",0,0)
-    titlebar2:SetPoint("TOPRIGHT",titlebar,"BOTTOMRIGHT",0,0)
-    titlebar2:SetHeight(13)
-
-    titlebar:SetGradientAlpha("VERTICAL",r*0.6,g*0.6,b*0.6,1,r,g,b,1)
-    titlebar:SetTexture(r,g,b,1)
-    titlebar2:SetGradientAlpha("VERTICAL",r*0.9,g*0.9,b*0.9,1,r*0.6,g*0.6,b*0.6,1)
-    titlebar2:SetTexture(r,g,b,1)
-
     local title = CreateFrame("Frame",nil,frame)
-    title:SetPoint("TOPLEFT",titlebar,"TOPLEFT",0,0)
-    title:SetPoint("BOTTOMRIGHT",titlebar2,"BOTTOMRIGHT",0,0)
+    title:SetPoint("TOPLEFT",frame,"TOPLEFT",0,0)
+    title:SetPoint("TOPRIGHT",frame,"TOPRIGHT",0,0)
+    title:SetHeight(33)
+    title:SetBackdrop(ControlBackdrop);
+    title:SetBackdropBorderColor(0, 0, 0, 0) -- remove border
+    title:SetBackdropColor(0.1, 0.1, 0.1)
 
     local titletext = title:CreateFontString("SkilletTitleText", "OVERLAY", "GameFontNormalLarge")
-    titletext:SetPoint("TOPLEFT",title,"TOPLEFT",0,0)
-    titletext:SetPoint("TOPRIGHT",title,"TOPRIGHT",0,0)
+    titletext:SetPoint("TOPLEFT",title,"TOPLEFT",0,-4)
+    titletext:SetPoint("TOPRIGHT",title,"TOPRIGHT",0,-4)
     titletext:SetHeight(26)
     titletext:SetShadowColor(0,0,0)
     titletext:SetShadowOffset(1,-1)
