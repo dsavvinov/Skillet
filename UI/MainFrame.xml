@@ -109,7 +109,7 @@
                 local ct = getglobal(this:GetName().."Counts")
                 local r,g,b = ct:GetTextColor()
                 getglobal(this:GetName().."Name"):SetTextColor(r, g, b)
-                SkilletTradeskillTooltip:Hide()
+                GameTooltip:Hide()
             </OnLeave>
         </Scripts>
     </Button>
@@ -320,47 +320,6 @@
         <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
         <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
     </CheckButton>
-
-    <!--
-    #
-    # Tool tip to be used when hovering over recipe lines in the skill list
-    #
-    -->
-    <GameTooltip name="SkilletTradeskillTooltip" frameStrata="TOOLTIP" hidden="true">
-        <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-            <EdgeSize>
-                <AbsValue val="16"/>
-            </EdgeSize>
-            <TileSize>
-                <AbsValue val="16"/>
-            </TileSize>
-            <BackgroundInsets>
-                <AbsInset left="5" right="5" top="5" bottom="5"/>
-            </BackgroundInsets>
-        </Backdrop>
-        <Layers>
-            <Layer level="ARTWORK">
-                <FontString name="$parentTextLeft1" inherits="GameTooltipTextSmall" hidden="true">
-                    <Anchors>
-                        <Anchor point="TOPLEFT">
-                            <Offset>
-                                <AbsDimension x="10" y="-10"/>
-                            </Offset>
-                        </Anchor>
-                    </Anchors>
-                </FontString>
-                <FontString name="$parentTextRight1" inherits="GameTooltipTextSmall" hidden="true">
-                    <Anchors>
-                        <Anchor point="RIGHT" relativeTo="$parentTextLeft1" relativePoint="LEFT">
-                            <Offset>
-                                <AbsDimension x="40" y="0"/>
-                            </Offset>
-                        </Anchor>
-                    </Anchors>
-                </FontString>
-            </Layer>
-        </Layers>
-    </GameTooltip>
 
     <!-- Don't change the name 'SkilletFrame' as other mods may depend on it -->
     <Frame name="SkilletFrame" toplevel="true" movable="true" resizable="true" parent="UIParent" enableMouse="true" hidden="true">

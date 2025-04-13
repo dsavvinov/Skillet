@@ -783,17 +783,13 @@ function Skillet:DisplayTradeskillTooltip(id)
         return
     end
 
-    SkilletTradeskillTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT",-300);
-    SkilletTradeskillTooltip:SetBackdropColor(0,0,0,1);
-    SkilletTradeskillTooltip:ClearLines();
-    SkilletTradeskillTooltip:SetClampedToScreen(true)
-
-    -- Set the tooltip's scale to match that of the default UI
-    local uiScale = 1.0;
-    if ( GetCVar("useUiScale") == "1" ) then
-        uiScale = tonumber(GetCVar("uiscale"))
-    end
-    SkilletTradeskillTooltip:SetScale(uiScale)
+    GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT",-300);
+    GameTooltip:SetTradeSkillItem(id);
+    GameTooltip:Show();
+    
+    -- 
+    -- Skillet additions to tooltip below
+    -- 
 
     local s = self.stitch:GetItemDataByIndex(self.currentTrade, id)
     if not s then
@@ -801,16 +797,12 @@ function Skillet:DisplayTradeskillTooltip(id)
         return
     end
 
-    -- Hyper link for the recipe name, allows a full view of the item without
-    -- having to mouse over the item in the detail pane.
-    SkilletTradeskillTooltip:SetHyperlink(s.link)
-
     local num, numwbank, numwalts = get_craftable_counts(s)
 
     -- how many can be created with the reagents in the inventory
     if num > 0 then
         local text = "\n" .. num .. " " .. L["can be created from reagents in your inventory"];
-        SkilletTradeskillTooltip:AddLine(text, 1, 1, 1, 0); -- (text, r, g, b, wrap)
+        GameTooltip:AddLine(text, 1, 1, 1, 0); -- (text, r, g, b, wrap)
     end
     -- how many can be created with the reagent in your inv + bank
     if self.db.profile.show_bank_alt_counts and numwbank > 0 and numwbank ~= num then
@@ -818,7 +810,7 @@ function Skillet:DisplayTradeskillTooltip(id)
         if num == 0 then
             text = "\n" .. text;
         end
-        SkilletTradeskillTooltip:AddLine(text, 1, 1, 1, 0); -- (text, r, g, b, wrap)
+        GameTooltip:AddLine(text, 1, 1, 1, 0); -- (text, r, g, b, wrap)
     end
     -- how many can be crafted with reagents on *all* alts, including this one.
     if self.db.profile.show_bank_alt_counts and numwalts and numwalts > 0 and numwalts ~= num then
@@ -826,10 +818,10 @@ function Skillet:DisplayTradeskillTooltip(id)
         if num and numwbank == 0 then
             text = "\n" .. text;
         end
-        SkilletTradeskillTooltip:AddLine(text, 1, 1, 1, 0); -- (text, r, g, b, wrap)
+        GameTooltip:AddLine(text, 1, 1, 1, 0); -- (text, r, g, b, wrap)
     end
 
-    SkilletTradeskillTooltip:AddLine("\n" .. self:GetReagentLabel(self.currentTrade, id));
+    GameTooltip:AddLine("\n" .. self:GetReagentLabel(self.currentTrade, id));
 
     -- now the list of regents for this recipe and some info about them
     for i=1, 20, 1 do
@@ -849,7 +841,7 @@ function Skillet:DisplayTradeskillTooltip(id)
             text = text .. GRAY_FONT_COLOR_CODE .. "  (" .. L["buyable"] .. ")" .. FONT_COLOR_CODE_CLOSE;
         end
 
-        SkilletTradeskillTooltip:AddDoubleLine(text, reagent_counts, 1, 1, 1);
+        GameTooltip:AddDoubleLine(text, reagent_counts, 1, 1, 1);
     end
 
     -- The legend at the bottom
@@ -858,16 +850,16 @@ function Skillet:DisplayTradeskillTooltip(id)
         text = text .. " / " .. L["alts"]
     end
     text = text .. ")"
-    SkilletTradeskillTooltip:AddDoubleLine("\n", text)
+    GameTooltip:AddDoubleLine("\n", text)
 
     -- Do any mods want to add extra info about this recipe?
     local extra_text = self:GetExtraItemDetailText(self.currentTrade, id)
     if extra_text then
-        SkilletTradeskillTooltip:AddLine("\n" .. extra_text)
+        GameTooltip:AddLine("\n" .. extra_text)
     end
 
-    SkilletTradeskillTooltip:Show();
-
+    -- Redraw if any Skillet-specific lines were added
+    GameTooltip:Show();
 end
 
 -- Sets the game tooltip item to the selected skill
