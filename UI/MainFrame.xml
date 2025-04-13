@@ -614,6 +614,38 @@
                 </Anchors>
             </Button>
 
+            <Frame name="SkilletAttunableFilterDropdown" inherits="UIDropDownMenuTemplate">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativeTo="SkilletSortDropdown" relativePoint="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="240" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString name="SkilletAttunableFilterLabel" inherits="GameFontNormal" text="Sorting">
+                            <Anchors>
+                                <Anchor point="RIGHT" relativeTo="$parent" relativePoint="LEFT">
+                                    <Offset>
+                                        <AbsDimension x="10" y="1"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                            <Color r="1" g="1" b="1" a="1"/>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        Skillet:AttunableFilterDropdown_OnLoad()
+                    </OnLoad>
+                    <OnShow>
+                        Skillet:AttunableFilterDropdown_OnShow()
+                    </OnShow>
+                </Scripts>
+            </Frame>
+
             <!--
             #
             # An edit box where users can type in filter text

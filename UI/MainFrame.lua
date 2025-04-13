@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 local L = AceLibrary("AceLocale-2.2"):new("Skillet")
 
+local SynastriaCoreLib = LibStub('SynastriaCoreLib-1.0')
+
 SKILLET_TRADE_SKILL_HEIGHT = 16
 SKILLET_NUM_REAGENT_BUTTONS = 8
 
@@ -146,6 +148,9 @@ function Skillet:CreateTradeSkillWindow()
     
     local label = getglobal("SkilletSortLabel");
     label:SetText(L["Sorting"]);
+
+    local label = getglobal("SkilletAttunableFilterLabel")
+    label:SetText(L["Attunement filter"]);
 
     SkilletCreateAllButton:SetText(L["Create All"])
     SkilletQueueAllButton:SetText(L["Queue All"])
@@ -363,6 +368,18 @@ local function is_hidden_skill(parent, skill_index)
         return true
     end
 
+    local attunementFilter = parent:GetTradeSkillOption(parent.currentTrade, "attunementfilter")
+    local link = s.link
+    if attunementFilter ~= "NONE" then
+        -- at least "UNATTUNABLE" level is requested - so if the item is unattunable at all, filter it out
+        if not SynastriaCoreLib.IsItemValid(link) then return true end
+
+        -- finer-grained filtering
+        if attunementFilter == "BASE" and SynastriaCoreLib.GetAttuneProgress(link, 0, 0) >= 100 then return true end
+        if attunementFilter == "TITANFORGED" and SynastriaCoreLib.GetAttuneProgress(link, 0, 1) >= 100 then return true end
+        if attunementFilter == "WARFORGED" and SynastriaCoreLib.GetAttuneProgress(link, 0, 2) >= 100 then return true end
+        if attunementFilter == "LIGHTFORGED" and SynastriaCoreLib.GetAttuneProgress(link, 0, 3) >= 100 then return true end
+    end
     return false
 
 end
@@ -752,7 +769,7 @@ end
 
 -- Display an action packed tooltip when we are over
 -- a recipe in the list of skills
---
+-- 
 -- id is the index of the skill in the currently selected trade.
 function Skillet:DisplayTradeskillTooltip(id)
 
