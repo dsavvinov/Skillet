@@ -79,12 +79,21 @@
                     </Anchors>
                     <Color r="1" g="1" b="1" a="1"/>
                 </FontString>
-                <FontString name="$parentCounts" inherits="GameFontNormalSmall" justifyH="RIGHT">
+                 <FontString name="$parentAttuned" inherits="GameFontNormalSmall" justifyH="RIGHT">
                     <Size>
                         <AbsDimension x="75" y="0"/>
                     </Size>
                     <Anchors>
                         <Anchor point="RIGHT"/>
+                    </Anchors>
+                    <Color r="1" g="1" b="1" a="1"/>
+                </FontString>
+                <FontString name="$parentCounts" inherits="GameFontNormalSmall" justifyH="RIGHT">
+                    <Size>
+                        <AbsDimension x="75" y="0"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentAttuned" relativePoint="LEFT"/>
                     </Anchors>
                     <Color r="1" g="1" b="1" a="1"/>
                 </FontString>

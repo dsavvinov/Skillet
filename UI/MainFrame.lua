@@ -580,13 +580,16 @@ function Skillet:internal_UpdateTradeSkillWindow()
             local buttonText = getglobal(button:GetName() .. "Name")
             local levelText = getglobal(button:GetName() .. "Level")
             local countText = getglobal(button:GetName() .. "Counts")
+            local attunedText = getglobal(button:GetName() .. "Attuned")
 
             buttonText:SetText("")
             levelText:SetText("")
             countText:SetText("")
+            attunedText:SetText("")
 
             levelText:Hide()
             countText:Hide()
+            attunedText:Hide("")
 
             local skill_color = skill_style_type[skillType]
             if skill_color then
@@ -684,6 +687,26 @@ function Skillet:internal_UpdateTradeSkillWindow()
                     end
 
                     text = text .. (self:GetRecipeNameSuffix(self.currentTrade, skillIndex) or "")
+
+                    if SynastriaCoreLib.IsAttunableBySomeone(s.link) then
+                        local forge = SynastriaCoreLib.GetItemAttuneForge(s.link)
+
+                        if forge == 0 then
+                            attunedText:SetText("Attuned")
+                            attunedText:SetTextColor(0.2, 1.0, 0.2)
+                        elseif forge == 1 then
+                            attunedText:SetText("Titanforged")
+                            attunedText:SetTextColor(0.71, 0.75, 1
+                        )
+                        elseif forge == 2 then
+                            attunedText:SetText("Warforged")
+                            attunedText:SetTextColor(0.94, 0.49, 0.41)
+                        elseif forge == 3 then
+                            attunedText:SetText("Lightforged")
+                            attunedText:SetTextColor(0.94, 0.94, 0.69)
+                        end
+                        attunedText:Show()
+                    end
                 else
                     nilFound = true
                     -- not cached yet
