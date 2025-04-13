@@ -661,11 +661,11 @@ function Skillet:internal_UpdateTradeSkillWindow()
                             if r and g and b then
                                 levelText:SetTextColor(r, g, b)
                             end
-                            levelText:SetText("[" .. level .. "]")
+                            levelText:SetText("(L" .. level .. ")")
                         end
 
                         levelText:Show()
-                        levelText:SetWidth(25)
+                        levelText:SetWidth(35)
                     else
                         levelText:SetWidth(10)
                     end
@@ -790,7 +790,7 @@ function Skillet:DisplayTradeskillTooltip(id)
     -- 
     -- Skillet additions to tooltip below
     -- 
-
+    
     local s = self.stitch:GetItemDataByIndex(self.currentTrade, id)
     if not s then
         -- this can happen when the recipe is not yet cached

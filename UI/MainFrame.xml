@@ -72,7 +72,7 @@
             <Layer level="OVERLAY">
                 <FontString name="$parentLevel" inherits="GameFontNormalSmall" justifyH="LEFT">
                     <Size>
-                        <AbsDimension x="25" y="0"/>
+                        <AbsDimension x="35" y="0"/>
                     </Size>
                     <Anchors>
                         <Anchor point="LEFT"/>
