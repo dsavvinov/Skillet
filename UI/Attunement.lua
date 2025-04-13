@@ -1,10 +1,10 @@
 Skillet.AttunableFilters = {
-    { label = "None (show all items)",    value = "NONE" },
+    { label = "Show all items",    value = "NONE" },
     { label = "Hide unattunable",         value = "UNATTUNABLE" },
-    { label = "Hide attuned base",        value = "BASE" },
-    { label = "Hide attuned titanforged", value = "TITANFORGED" },
-    { label = "Hide attuned warforged",   value = "WARFORGED" },
     { label = "Hide attuned lightforged", value = "LIGHTFORGED" },
+    { label = "Hide attuned warforged",   value = "WARFORGED" },
+    { label = "Hide attuned titanforged", value = "TITANFORGED" },
+    { label = "Hide attuned base",        value = "BASE" }
 }
 
 local lastFilter = "NONE"

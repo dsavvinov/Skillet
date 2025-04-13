@@ -359,12 +359,14 @@ local function is_hidden_skill(parent, skill_index)
     if attunementFilter ~= "NONE" then
         -- at least "UNATTUNABLE" level is requested - so if the item is unattunable at all, filter it out
         if not SynastriaCoreLib.IsItemValid(link) then return true end
+        
+        local forge = SynastriaCoreLib.GetItemAttuneForge(s.link)
 
         -- finer-grained filtering
-        if attunementFilter == "BASE" and SynastriaCoreLib.GetAttuneProgress(link, 0, 0) >= 100 then return true end
-        if attunementFilter == "TITANFORGED" and SynastriaCoreLib.GetAttuneProgress(link, 0, 1) >= 100 then return true end
-        if attunementFilter == "WARFORGED" and SynastriaCoreLib.GetAttuneProgress(link, 0, 2) >= 100 then return true end
-        if attunementFilter == "LIGHTFORGED" and SynastriaCoreLib.GetAttuneProgress(link, 0, 3) >= 100 then return true end
+        if attunementFilter == "BASE" and forge >= 0 then return true end
+        if attunementFilter == "TITANFORGED" and forge >= 1 then return true end
+        if attunementFilter == "WARFORGED" and forge >= 2 then return true end
+        if attunementFilter == "LIGHTFORGED" and forge >= 3 then return true end
     end
     return false
 
@@ -792,7 +794,9 @@ function Skillet:DisplayTradeskillTooltip(id)
         return
     end
 
-    GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT",-300);
+    GameTooltip:SetOwner(this, "ANCHOR_NONE");
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetPoint("RIGHT", this, "TOPLEFT", -11, 0)
     GameTooltip:SetTradeSkillItem(id);
     GameTooltip:Show();
     
