@@ -20,6 +20,10 @@
 <Script file="Libs\LibPeriodicTable-3.1\LibPeriodicTable-3.1.lua"/>
 <Script file="Libs\LibPeriodicTable-3.1\LibPeriodicTable-3.1-Tradeskill\LibPeriodicTable-3.1-Tradeskill.lua"/>
 <Script file="Libs\LibPeriodicTable-3.1\LibPeriodicTable-3.1-TradeskillResultMats\LibPeriodicTable-3.1-TradeskillResultMats.lua"/>
+
+<Include file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
+<Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
+<Include file="Libs\SynastriaCoreLib-1.0\SynastriaCoreLib-1.0.xml" />
 <!--@end-no-lib-strip@-->
 
 </Ui>
