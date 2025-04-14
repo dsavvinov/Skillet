@@ -975,6 +975,7 @@ function Skillet:UpdateDetailsWindow(skill_index)
             icon:SetNormalTexture(reagent.texture)
 
             button:SetWidth(width - 20)
+            count:SetWidth(60)
             button:Show()
         else
             -- out of necessary reagents, don't need to show the button,
