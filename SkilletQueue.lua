@@ -22,6 +22,25 @@ local AceEvent = AceLibrary("AceEvent-2.0")
 
 local QUEUE_DEBUG = false
 
+
+local function get_craftable_counts(recipeIndex)
+    local factor = 1
+    if Skillet.db.profile.show_craft_counts then
+        factor = recipe.nummade or 1
+    end
+
+    local reagentsCount = GetTradeSkillNumReagents(recipeIndex)
+    
+    local craftable = 1000000
+    for reagentIndex = 1, reagentsCount do
+        local _, _, required, available = GetTradeSkillReagentInfo(recipeIndex, reagentIndex)
+        craftable = math.min(craftable, math.floor(available / required))
+    end
+
+    return craftable
+end
+
+
 -- Adds the recipe to the queue of recipes to be processed. If the recipe
 -- is already in the queue, then the count of items to be created is increased,
 -- otherwise the recipe is added it the end
@@ -49,7 +68,7 @@ local function add_items_to_queue(skillIndex, recipe, count)
             end
 
             local needed = (reagent.needed * count)
-            local   have = GetItemCount(reagent.link, true)
+            local _, _, _, have = GetTradeSkillReagentInfo(skillIndex, i)
 
             if QUEUE_DEBUG then
                 Skillet:Print("  have " .. have .. "x" .. reagent.link .. ", need " .. needed)
@@ -110,9 +129,7 @@ function Skillet:QueueAllItems()
 	if self.currentTrade and self.selectedSkill then
 		local s = self.stitch:GetItemDataByIndex(self.currentTrade, self.selectedSkill)
         if s then
-            local factor = s.nummade or 1
-            -- TODO: not correct here
-            local count = math.floor(s.numcraftable/factor) - self.stitch:GetNumQueuedItems(self.selectedSkill)
+            local count = get_craftable_counts(self.selectedSkill) - self.stitch:GetNumQueuedItems(self.selectedSkill)
             if count > 0 then
                 add_items_to_queue(self.selectedSkill, s, count)
             end
@@ -142,9 +159,7 @@ function Skillet:CreateAllItems()
 	if self.currentTrade and self.selectedSkill then
 		local s = self.stitch:GetItemDataByIndex(self.currentTrade, self.selectedSkill);
         if s then
-            local factor = s.nummade or 1
-            -- TODO: not correct here
-            local count = math.floor(s.numcraftable/factor) - self.stitch:GetNumQueuedItems(self.selectedSkill)
+            local count = get_craftable_counts(self.selectedSkill) - self.stitch:GetNumQueuedItems(self.selectedSkill)
             if count > 0 then
                 add_items_to_queue(self.selectedSkill, s, count)
                 self:ProcessQueue()
