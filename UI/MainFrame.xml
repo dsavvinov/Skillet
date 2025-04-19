@@ -21,6 +21,33 @@
 
     -->
 
+    <!-- Template for trade buttons (profession buttons) in skillet frame for Main -->
+    <CheckButton name="SkilletTradeButtonTemplate" virtual="true" hidden="true">
+		<Size>
+			<AbsDimension x="25" y="25"/>
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIcon"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter>
+				Skillet:TradeButton_OnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+			<OnClick>
+				<!-- Skillet:InventoryFilterButtons_Hide() -->
+				Skillet:TradeButton_OnClick(self,button)
+			</OnClick>
+		</Scripts>
+		<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>
+		<HighlightTexture alphaMode="ADD" file="Interface\Buttons\ButtonHilight-Square"/>
+		<CheckedTexture alphaMode="ADD" file="Interface\Buttons\CheckButtonHilight"/>
+	</CheckButton>
+
     <!--
     #
     #   Template for all the buttons used in the list of known skills
@@ -414,14 +441,27 @@
             # A status bar to show how much skill you have in this trade
             #
             -->
-            <StatusBar name="SkilletRankFrame" drawLayer="BACKGROUND" minValue="0" maxValue="1" defaultValue="0">
+            <Frame name="SkilletTradeSkillsListAndRankParent">
                 <Size>
-                    <AbsDimension x="265" y="14"/>
+                    <AbsDimension x="300" y="45"/> 
                 </Size>
                 <Anchors>
-                    <Anchor point="TOPRIGHT">
+                    <Anchor point="TOPRIGHT" relativeTo="SkilletFrame" relativePoint="TOPRIGHT">
                         <Offset>
-                            <AbsDimension x="-12" y="-37"/>
+                            <AbsDimension x="0" y="-33"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+
+            <StatusBar name="SkilletRankFrame" drawLayer="BACKGROUND" minValue="0" maxValue="1" defaultValue="0">
+                <Size>
+                    <AbsDimension x="290" y="14"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeTo="SkilletFrame" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="0" y="-63"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -446,7 +486,7 @@
                 <Frames>
                     <Button name="$parentBorder">
                         <Size>
-                            <AbsDimension x="274" y="27"/>
+                            <AbsDimension x="284" y="27"/>
                         </Size>
                         <Anchors>
                             <Anchor point="LEFT">
@@ -586,7 +626,7 @@
                 <Anchors>
                     <Anchor point="BOTTOMLEFT" relativeTo="SkilletSortDropdown" relativePoint="BOTTOMRIGHT">
                         <Offset>
-                            <AbsDimension x="240" y="0"/>
+                            <AbsDimension x="213" y="0"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -753,12 +793,12 @@
             -->
             <Button name="SkilletShowOptionsButton" inherits="UIPanelButtonTemplate" text="Options" parent="SkilletFrame">
                 <Size>
-                    <AbsDimension x="100" y="22"/>
+                    <AbsDimension x="90" y="22"/>
                 </Size>
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeTo="SkilletRankFrame" relativePoint="BOTTOMRIGHT">
                         <Offset>
-                            <AbsDimension x="3" y="-1"/>
+                            <AbsDimension x="-10" y="-1"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -775,7 +815,7 @@
             -->
             <Button name="SkilletRescanButton" inherits="UIPanelButtonTemplate" text="Rescan" parent="SkilletFrame">
                 <Size>
-                    <AbsDimension x="100" y="22"/>
+                    <AbsDimension x="90" y="22"/>
                 </Size>
                 <Anchors>
                     <Anchor point="RIGHT" relativeTo="SkilletShowOptionsButton" relativePoint="LEFT">
@@ -838,7 +878,7 @@
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeTo="SkilletFrame" relativePoint="TOPRIGHT">
                         <Offset>
-                            <AbsDimension x="-10" y="-75"/>
+                            <AbsDimension x="-10" y="-100"/>
                         </Offset>
                     </Anchor>
                 </Anchors>

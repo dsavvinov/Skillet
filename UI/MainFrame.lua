@@ -762,6 +762,8 @@ function Skillet:internal_UpdateTradeSkillWindow()
         hide_button(button, self.currentTrade, 0, i)
     end
 
+    self:UpdateTradeButtons()
+
     if nilFound then
         if not AceEvent:IsEventScheduled("Skillet_redo_the_update") then
             AceEvent:ScheduleEvent("Skillet_redo_the_update", 0.25, self)
@@ -1292,4 +1294,141 @@ function Skillet:Tradeskill_OnHide()
     if TradeSkillFrame then
         restore_blizz(TradeSkillFrame, orig_tradeskill_settings)
     end
+end
+
+local tradeSkillList = {
+	2259,		-- alchemy
+	2018,		-- blacksmithing
+	7411,		-- enchanting
+	4036,		-- engineering
+	45357,		-- inscription
+	25229,		-- jewelcrafting
+	2108,		-- leatherworking
+	2575,		-- mining
+	2656,		-- mining skills, smelting (from mining, 2575)
+	3908,		-- tailoring
+	2550,		-- cooking
+	3273,		-- first aid
+}
+
+local tradeSkillNamesById = {}
+local tradeSkillIdsByNames = {}
+
+function Skillet:TradeButton_OnEnter(button)
+	GameTooltip:SetOwner(button, "ANCHOR_TOPLEFT")
+	GameTooltip:ClearLines()
+	local bName = button:GetName()
+	local _, player, tradeID = string.split("-", bName)
+    tradeID = tonumber(tradeID)
+	local sName = tradeSkillNamesById[tonumber(tradeID)]
+	--DA.DEBUG(3,"TradeButton_OnEnter("..tostring(bName).."), player= "..tostring(player)..", tradeID= "..tostring(tradeID)..", sName= "..tostring(sName))
+	GameTooltip:AddLine(sName)
+	data = self.tradeSkills[tradeID]
+	if not data or data == {} then
+		GameTooltip:AddLine(L["No Data"],1,0,0)
+	else
+		local rank, maxRank = data.rank, data.maxRank
+		GameTooltip:AddLine("["..tostring(rank).."/"..tostring(maxRank).."]",0,1,0)
+		if tradeID == self.currentTrade then
+			GameTooltip:AddLine("shift-click to link")
+		end
+	end
+	GameTooltip:Show()
+end
+
+function Skillet:ChangeTradeSkill(tradeName)
+    if tradeName == "Mining" then 
+        CastSpellByName("Smelting")
+    else
+        CastSpellByName(tradeName)
+    end
+    self.currentTrade = tradeName
+end
+
+-- Either change to a different profession or change the currently selected recipe
+--
+function Skillet:SetTradeSkill(player, tradeID)
+	if tradeID ~= self.currentTrade then
+		local tradeName = tradeSkillNamesById[tradeID]
+		self.currentPlayer = player
+		self:ChangeTradeSkill(tradeName)
+	end
+end
+
+function Skillet:TradeButton_OnClick(this,button)
+	--DA.DEBUG(0,"TradeButton_OnClick("..DA.DUMP1(this)..", "..tostring(button)..")")
+	local name = this:GetName()
+	local _, player, tradeID = string.split("-", name)
+	tradeID = tonumber(tradeID)
+	local data = self.tradeSkills[tradeID]
+	--DA.DEBUG(0,"TradeButton_OnClick "..(name or "nil").." "..(player or "nil").." "..(tradeID or "nil"))
+	if button == "LeftButton" then
+		if player == UnitName("player") or (data and data ~= nil) then
+            self:SetTradeSkill(self.currentPlayer, tradeID)
+		end
+	end
+	GameTooltip:Hide()
+end
+
+function Skillet:ScanPlayerTradeSkills()
+    if not self.tradeSkills then
+        self.tradeSkills = {}
+    end
+
+    for i = 1, #tradeSkillList, 1 do
+        local id = tradeSkillList[i]
+        local name = GetSpellInfo(id)
+        tradeSkillNamesById[id] = name
+        tradeSkillIdsByNames[name] = id
+    end
+
+    -- need to scan the whole list of skill lines in 3.3.5a and match to profession names
+    for i = 1, GetNumSkillLines() do
+		local name, _, _, current, _, _, max = GetSkillLineInfo(i)
+		local tradeSkillId = tradeSkillIdsByNames[name]
+        if tradeSkillId then
+            self.tradeSkills[tradeSkillId] = {}
+            self.tradeSkills[tradeSkillId].rank = current
+            self.tradeSkills[tradeSkillId].maxRank = max
+        end
+	end
+end
+
+function Skillet:UpdateTradeButtons()
+	--DA.DEBUG(0,"UpdateTradeButtons("..tostring(player)..")")
+    self:ScanPlayerTradeSkills()
+    local player = UnitName("player")
+	local position = 0 -- pixels
+	local frameName = "SkilletFrameTradeButtons"
+	local frame = _G[frameName]
+	if not frame then
+		frame = CreateFrame("Frame", frameName, SkilletFrame)
+	end
+	frame:Show()
+
+	for i=1,#tradeSkillList,1 do	-- iterate thru all skills in defined order for neatness (professions, secondary, class skills)
+		local tradeID = tradeSkillList[i]
+		if self.tradeSkills[tradeID] then 
+            local buttonName = "SkilletFrameTradeButton-"..player.."-"..tradeID
+			local button = _G[buttonName]
+			if not button then
+				--DA.DEBUG(1,"UpdateTradeButtons: CreateFrame for "..tostring(buttonName))
+				button = CreateFrame("CheckButton", buttonName, frame, "SkilletTradeButtonTemplate")
+			end
+
+			button:ClearAllPoints()
+			button:SetPoint("BOTTOMLEFT", SkilletRankFrame, "TOPLEFT", position, 3)
+			local buttonIcon = _G[buttonName.."Icon"]
+            local  _, _, spellIcon = GetSpellInfo(tradeID)
+			buttonIcon:SetTexture(spellIcon)
+			position = position + button:GetWidth()
+
+			if tradeID == self.currentTrade then
+				button:SetChecked(true)
+			else
+				button:SetChecked(false)
+			end
+			button:Show()
+        end
+	end -- for
 end
