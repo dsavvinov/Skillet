@@ -1336,22 +1336,18 @@ function Skillet:TradeButton_OnEnter(button)
 	GameTooltip:Show()
 end
 
-function Skillet:ChangeTradeSkill(tradeName)
-    if tradeName == "Mining" then 
-        CastSpellByName("Smelting")
-    else
-        CastSpellByName(tradeName)
-    end
-    self.currentTrade = tradeName
-end
-
 -- Either change to a different profession or change the currently selected recipe
 --
 function Skillet:SetTradeSkill(player, tradeID)
 	if tradeID ~= self.currentTrade then
 		local tradeName = tradeSkillNamesById[tradeID]
 		self.currentPlayer = player
-		self:ChangeTradeSkill(tradeName)
+		if tradeName == "Mining" then 
+            CastSpellByName("Smelting")
+        else
+            CastSpellByName(tradeName)
+        end
+        self.currentTrade = tradeName
 	end
 end
 
@@ -1408,6 +1404,7 @@ function Skillet:UpdateTradeButtons()
 
 	for i=1,#tradeSkillList,1 do	-- iterate thru all skills in defined order for neatness (professions, secondary, class skills)
 		local tradeID = tradeSkillList[i]
+        local tradeName = tradeSkillNamesById[tradeID]
 		if self.tradeSkills[tradeID] then 
             local buttonName = "SkilletFrameTradeButton-"..player.."-"..tradeID
 			local button = _G[buttonName]
@@ -1423,7 +1420,7 @@ function Skillet:UpdateTradeButtons()
 			buttonIcon:SetTexture(spellIcon)
 			position = position + button:GetWidth()
 
-			if tradeID == self.currentTrade then
+			if tradeName == self.currentTrade then
 				button:SetChecked(true)
 			else
 				button:SetChecked(false)
