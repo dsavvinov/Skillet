@@ -489,7 +489,7 @@ function Skillet:internal_UpdateTradeSkillWindow()
     -- Set the state of any craft specific options
     SkilletHideTrivialRecipes:SetChecked(self:GetTradeSkillOption(self.currentTrade, "hidetrivial"))
     SkilletHideUncraftableRecipes:SetChecked(self:GetTradeSkillOption(self.currentTrade, "hideuncraftable"))
-    Skillet.UpdateSelectedDropdownToActualFilter()
+    self.AttunableFilterDropdown_OnShow() 
 
     self:UpdateQueueWindow()
 

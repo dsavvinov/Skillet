@@ -25,25 +25,18 @@ function Skillet:AttunableFilterDropdown_OnLoad()
     UIDropDownMenu_Initialize(SkilletAttunableFilterDropdown, Skillet.AttunableFilterDropdown_Initialize)
     SkilletAttunableFilterDropdown.displayMode = "MENU"  -- changes the pop-up borders to be rounded instead of square
     UIDropDownMenu_SetWidth(SkilletAttunableFilterDropdown, 160)
-
-    for i, filter in ipairs(Skillet.AttunableFilters) do
-        if filter.value == lastFilter then
-            UIDropDownMenu_SetSelectedID(SkilletAttunableFilterDropdown, i)
-        end
-    end 
 end
 
-function Skillet.AttunableFilterDropdown_Initialize()
+function Skillet.AttunableFilterDropdown_Initialize(self, level)
     for i, filter in ipairs(Skillet.AttunableFilters) do
         local info = UIDropDownMenu_CreateInfo()
         info.text = filter.label
-        info.value = filter.value
         info.func = function()
-            UIDropDownMenu_SetSelectedID(SkilletAttunableFilterDropdown, i)
+            UIDropDownMenu_SetSelectedID(self, i)
             Skillet:SetTradeSkillOption(Skillet.currentTrade, "attunementfilter", filter.value)
             Skillet:UpdateTradeSkillWindow()
         end
-        UIDropDownMenu_AddButton(info)
+        UIDropDownMenu_AddButton(info, level)
     end
 end
 
