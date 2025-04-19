@@ -437,6 +437,8 @@ local function hide_button(button, trade, skill, index)
     button:Hide()
 end
 
+
+local last_redraw_num_skills = 0
 -- Updates the trade skill window whenever anything has changed,
 -- number of skills, skill type, skill level, etc
 function Skillet:internal_UpdateTradeSkillWindow()
@@ -503,6 +505,13 @@ function Skillet:internal_UpdateTradeSkillWindow()
     -- Will only sort recipes if something has changed
     -- and there is a sorting method selected.
     self:ResortRecipes()
+    if numTradeSkills ~= last_redraw_num_skills then
+        -- Inherently, TradeSkillApi works through indices (sigh, Blizzed), and Skillet caches everything
+        -- also based on the indices (sigh, Skillet). So, when a new skill is learned, everything shifts and
+        -- has to be invalidated, otherwise a lot of weird things will start happening
+        self.stitch:ScanTrade()
+        last_redraw_num_skills = numTradeSkills
+    end
 
     -- List of all the reagents we need for all queued recipies
     -- for this player. This is used to ajust the craftable item
