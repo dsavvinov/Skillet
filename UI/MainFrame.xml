@@ -456,12 +456,12 @@
 
             <StatusBar name="SkilletRankFrame" drawLayer="BACKGROUND" minValue="0" maxValue="1" defaultValue="0">
                 <Size>
-                    <AbsDimension x="290" y="14"/>
+                    <AbsDimension x="275" y="14"/>
                 </Size>
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeTo="SkilletFrame" relativePoint="TOPRIGHT">
                         <Offset>
-                            <AbsDimension x="0" y="-63"/>
+                            <AbsDimension x="-20" y="-63"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -798,7 +798,7 @@
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeTo="SkilletRankFrame" relativePoint="BOTTOMRIGHT">
                         <Offset>
-                            <AbsDimension x="-10" y="-1"/>
+                            <AbsDimension x="3" y="-1"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
